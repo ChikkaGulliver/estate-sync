@@ -1,66 +1,92 @@
-import { useLocation } from "react-router-dom";
-import "./dashboard.css";
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 
 export default function Dashboard() {
-  const location = useLocation();
-  const data = location.state;
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // If user directly opens dashboard without submitting
-  if (!data) {
-    return (
-      <div className="dashboard">
-        <h2>No Service Data Found</h2>
-        <p>Please apply for a service first.</p>
-      </div>
+  useEffect(() => {
+    const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setOrders(data);
+        setLoading(false);
+      },
+      (error) => {
+        console.error(error);
+        setLoading(false);
+      }
     );
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <h2 style={{ padding: "40px" }}>Loading...</h2>;
   }
 
   return (
-    <div className="dashboard">
+    <div style={{ padding: "40px" }}>
+      <h1>Your Requests</h1>
 
-      {/* HEADER */}
-      <h1>User Dashboard</h1>
+      {orders.length === 0 ? (
+        <p>No requests found</p>
+      ) : (
+        orders.map((order) => {
+          const govtFee = Number(order.govtFee || 0);
+          const platformFee = 799;
+          const total = govtFee + platformFee;
 
-      <h3>Service Selected: {data.serviceName}</h3>
+          return (
+            <div key={order.id} style={styles.card}>
+              <h3>{order.serviceName}</h3>
 
-      {/* TRACKING SECTION */}
-      <div className="card">
-        <h2>Tracking Status</h2>
+              <p><b>Name:</b> {order.name}</p>
+              <p><b>Phone:</b> {order.phone}</p>
 
-        <ul>
-          <li className="done">✔ Documents Submitted</li>
-          <li className="progress">⏳ Verification in Progress</li>
-          <li>Agent Assignment Pending</li>
-          <li>Processing</li>
-          <li>Completed</li>
-        </ul>
-      </div>
+              <p>
+                <b>Status:</b>{" "}
+                <span style={{ color: "orange" }}>
+                  {order.status || "Pending"}
+                </span>
+              </p>
 
-      {/* CHARGES */}
-      <div className="card">
-        <h2>Charges Breakdown</h2>
+              <p><b>Details:</b> {order.details}</p>
 
-        <p>Agent Commission (6%): ₹{data.agentCommission}</p>
-        <p>Platform Fee: ₹{data.platformFee}</p>
+              <p><b>Govt Fee:</b> ₹ {govtFee}</p>
+              <p><b>Platform Fee:</b> ₹ {platformFee}</p>
+              <p><b>Total:</b> ₹ {total}</p>
 
-        <hr />
-
-        <h3>Total Amount: ₹{data.total}</h3>
-      </div>
-
-      {/* DELIVERY */}
-      <div className="card">
-        <h2>Delivery Details</h2>
-
-        <p>
-          Your service will be delivered via:
-          <br /><br />
-          📧 Email (Digital Copy)
-          <br />
-          📦 Physical Post to your registered address
-        </p>
-      </div>
-
+              {order.createdAt && (
+                <p style={{ fontSize: "12px", color: "#666" }}>
+                  Submitted on:{" "}
+                  {order.createdAt.toDate
+                    ? order.createdAt.toDate().toLocaleString()
+                    : "N/A"}
+                </p>
+              )}
+            </div>
+          );
+        })
+      )}
     </div>
   );
 }
+
+/* 🎨 Styles */
+const styles = {
+  card: {
+    border: "1px solid #ddd",
+    padding: "20px",
+    marginTop: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  },
+};

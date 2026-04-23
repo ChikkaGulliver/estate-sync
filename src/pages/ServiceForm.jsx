@@ -1,127 +1,135 @@
-import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import "./serviceform.css";
-
-// Documents required for each service
-const serviceDocs = {
-  "Sale Deed Registration": ["Sale Deed", "Owner ID Proof"],
-  "Gift Deed Registration": ["Gift Deed", "Owner ID Proof"],
-  "Property Transfer": ["Transfer Papers", "Tax Receipt"],
-
-  "Khata Transfer": ["Previous Khata", "Property ID"],
-  "Khata Extraction": ["Property Details"],
-  "Ownership Change": ["Ownership Proof"],
-
-  "Building Plan Approval": ["Building Plan", "Engineer Certificate"],
-  "Construction License": ["Construction Details"],
-
-  "Land Conversion": ["Land Records", "Conversion Form"],
-  "Layout Approval": ["Layout Plan", "Survey Report"],
-
-  "Title Verification": ["Sale Agreement", "Title Deed"],
-  "Legal Opinion": ["Property Documents"],
-  "Encumbrance Certificate": ["Property Details"],
-
-  "Home Loan Assistance": ["Income Proof", "Bank Statements"],
-  "Property Valuation": ["Property Documents"],
-  "Site Inspection": ["Property Address"],
-
-  "Agricultural Land Registration": ["Land Ownership Proof"],
-  "Conversion Guidance": ["Land Details"],
-
-  "Document Checklist": ["Existing Documents"],
-  "Application Filing Help": ["Required Documents"]
-};
+import { db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function ServiceForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const serviceName = location.state?.serviceName || "Service";
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [details, setDetails] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [aadhar, setAadhar] = useState("");
-  const [files, setFiles] = useState({});
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Handle file upload
-  const handleFileChange = (doc, file) => {
-    setFiles((prev) => ({
-      ...prev,
-      [doc]: file
-    }));
-  };
-
-  // Submit form
-  const handleSubmit = () => {
-    if (!aadhar || aadhar.length !== 12) {
-      alert("Enter valid 12-digit Aadhar number");
+    if (!name || !phone) {
+      alert("Please fill required fields");
       return;
     }
 
-    const requiredDocs = serviceDocs[serviceName] || [];
+    try {
+      setLoading(true);
 
-    for (let doc of requiredDocs) {
-      if (!files[doc]) {
-        alert(`Please upload ${doc}`);
-        return;
-      }
+      await addDoc(collection(db, "orders"), {
+        serviceName: decodeURIComponent(id),
+        name,
+        phone,
+        details,
+        status: "Pending",
+        govtFee: 0,
+        createdAt: serverTimestamp(),
+      });
+
+      alert("✅ Request submitted successfully");
+
+      // Reset
+      setName("");
+      setPhone("");
+      setDetails("");
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert("❌ Error submitting request");
+    } finally {
+      setLoading(false);
     }
-
-    // 💰 Charges Calculation
-    const basePrice = 5000;
-    const agentCommission = basePrice * 0.06;
-    const platformFee = 599;
-    const total = basePrice + agentCommission + platformFee;
-
-    // Redirect to dashboard
-    navigate("/dashboard", {
-      state: {
-        serviceName,
-        aadhar,
-        agentCommission,
-        platformFee,
-        total
-      }
-    });
   };
 
   return (
-    <div className="form-page">
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2>Apply for Service</h2>
 
-      {/* BACK BUTTON */}
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
+        <p style={{ color: "#666" }}>
+          Service: <b>{decodeURIComponent(id)}</b>
+        </p>
 
-      <div className="form-card">
-        <h2>{serviceName}</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={styles.input}
+          />
 
-        {/* AADHAR INPUT */}
-        <input
-          type="number"
-          placeholder="Enter 12-digit Aadhar Number"
-          onChange={(e) => setAadhar(e.target.value)}
-        />
+          <input
+            type="text"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={styles.input}
+          />
 
-        {/* DOCUMENT UPLOADS */}
-        {(serviceDocs[serviceName] || []).map((doc, index) => (
-          <div key={index} className="doc-field">
-            <label>{doc}</label>
+          <textarea
+            placeholder="Describe your request / documents"
+            value={details}
+            onChange={(e) => setDetails(e.target.value)}
+            style={styles.textarea}
+          />
 
-            <input
-              type="file"
-              onChange={(e) =>
-                handleFileChange(doc, e.target.files[0])
-              }
-            />
-          </div>
-        ))}
-
-        {/* SUBMIT */}
-        <button className="submit-btn" onClick={handleSubmit}>
-          Submit Application
-        </button>
+          <button type="submit" style={styles.button} disabled={loading}>
+            {loading ? "Submitting..." : "Submit Request"}
+          </button>
+        </form>
       </div>
-
     </div>
   );
 }
+
+/* 🎨 Styles */
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "90vh",
+    background: "#f3f4f6",
+  },
+  card: {
+    background: "white",
+    padding: "30px",
+    borderRadius: "10px",
+    width: "350px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+    textAlign: "center",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  textarea: {
+    width: "100%",
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    height: "80px",
+  },
+  button: {
+    width: "100%",
+    padding: "12px",
+    background: "#0ea5e9",
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+};

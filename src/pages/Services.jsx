@@ -2,77 +2,55 @@ import { useNavigate } from "react-router-dom";
 import "./services.css";
 
 const services = [
-  // Property Registration
-  { category: "Property Registration Services", name: "Sale Deed Registration" },
-  { category: "Property Registration Services", name: "Gift Deed Registration" },
-  { category: "Property Registration Services", name: "Property Transfer" },
+  { category: "Property Registration", name: "Sale Deed Registration" },
+  { category: "Property Registration", name: "Gift Deed Registration" },
 
-  // Khata & Ownership
-  { category: "Khata & Ownership Services", name: "Khata Transfer" },
-  { category: "Khata & Ownership Services", name: "Khata Extraction" },
-  { category: "Khata & Ownership Services", name: "Ownership Change" },
+  { category: "Khata Services", name: "Khata Transfer" },
+  { category: "Khata Services", name: "Ownership Change" },
 
-  // Construction Approval
-  { category: "Construction Approval Services", name: "Building Plan Approval" },
-  { category: "Construction Approval Services", name: "Construction License" },
+  { category: "Construction", name: "Building Plan Approval" },
 
-  // Land & Layout
-  { category: "Land & Layout Services", name: "Land Conversion" },
-  { category: "Land & Layout Services", name: "Layout Approval" },
+  { category: "Land Services", name: "Land Conversion" },
+  { category: "Land Services", name: "Layout Approval" },
 
-  // Legal & Verification
-  { category: "Legal & Verification Services", name: "Title Verification" },
-  { category: "Legal & Verification Services", name: "Legal Opinion" },
-  { category: "Legal & Verification Services", name: "Encumbrance Certificate" },
+  { category: "Legal", name: "Encumbrance Certificate" },
+  { category: "Legal", name: "Title Verification" },
 
-  // Home Buyer Support
-  { category: "Home Buyer Support Services", name: "Home Loan Assistance" },
-  { category: "Home Buyer Support Services", name: "Property Valuation" },
-  { category: "Home Buyer Support Services", name: "Site Inspection" },
-
-  // Farm Land
-  { category: "Farm Land Services", name: "Agricultural Land Registration" },
-  { category: "Farm Land Services", name: "Conversion Guidance" },
-
-  // Document Guidance
-  { category: "Document Guidance Services", name: "Document Checklist" },
-  { category: "Document Guidance Services", name: "Application Filing Help" }
+  { category: "Support", name: "Home Loan Assistance" },
+  { category: "Support", name: "Property Valuation" },
+  { category: "Support", name: "Site Inspection" },
 ];
 
 export default function Services() {
   const navigate = useNavigate();
 
   return (
-    <div className="services-page">
+    <div style={{ padding: "40px" }}>
+      <h1>Services</h1>
 
-      <div className="header">
-        <h1>Our Services</h1>
-        <p>Select a service and proceed</p>
-      </div>
-
-      <div className="services-grid">
+      <div style={{ display: "grid", gap: "15px" }}>
         {services.map((service, index) => (
-          <div key={index} className="service-card">
-
-            <p className="category">{service.category}</p>
-
+          <div
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <p>{service.category}</p>
             <h3>{service.name}</h3>
 
             <button
-              className="apply-btn"
               onClick={() =>
-                navigate("/service-form", {
-                  state: { serviceName: service.name }
-                })
+                navigate(`/service-form/${service.name}`)
               }
             >
               Apply
             </button>
-
           </div>
         ))}
       </div>
-
     </div>
   );
 }
