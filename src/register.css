@@ -1,0 +1,87 @@
+.register-page {
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.register-card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.register-card h1 {
+  margin-bottom: 5px;
+}
+
+.register-card p {
+  font-size: 0.9rem;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+/* ROLE TABS */
+.role-tabs {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.role-tabs button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: #e2e8f0;
+  cursor: pointer;
+}
+
+.role-tabs .active {
+  background: #0ea5e9;
+  color: white;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* BUTTONS */
+button {
+  padding: 10px;
+  border: none;
+  background: #0ea5e9;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0284c7;
+}
+
+/* BACK BUTTON */
+.back {
+  background: #64748b;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* STEP INDICATOR */
+.steps-indicator {
+  font-size: 0.85rem;
+  color: gray;
+  margin-bottom: 10px;
+}

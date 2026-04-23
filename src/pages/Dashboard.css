@@ -1,0 +1,102 @@
+/* RESET */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* MAIN PAGE */
+.dashboard {
+  padding: 40px;
+  background: #f1f5f9;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.dashboard h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.dashboard h3 {
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* CARD BOX */
+.card {
+  background: white;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 600px;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+/* CARD TITLE */
+.card h2 {
+  color: #0ea5e9;
+  margin-bottom: 15px;
+}
+
+/* TRACKING LIST */
+.card ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* TRACKING ITEM */
+.card ul li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+/* REMOVE LAST BORDER */
+.card ul li:last-child {
+  border-bottom: none;
+}
+
+/* STATUS COLORS */
+.done {
+  color: green;
+  font-weight: bold;
+}
+
+.progress {
+  color: orange;
+  font-weight: bold;
+}
+
+/* CHARGES TEXT */
+.card p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+/* TOTAL */
+.card h3 {
+  color: #0ea5e9;
+  margin-top: 10px;
+}
+
+/* DIVIDER */
+.card hr {
+  margin: 10px 0;
+}
+
+/* DELIVERY TEXT */
+.card p:last-child {
+  line-height: 1.6;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 600px) {
+  .dashboard {
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+  }
+}
