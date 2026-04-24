@@ -1,10 +1,18 @@
+/* RESET (optional but safe) */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* NAVBAR CONTAINER */
 .navbar {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
-  background: linear-gradient(90deg, #0f172a, #1e293b);
+  padding: 14px 40px;
+  background: linear-gradient(90deg, #1e3a8a, #0ea5e9);
   color: white;
   position: sticky;
   top: 0;
@@ -18,68 +26,94 @@
   letter-spacing: 1px;
 }
 
-/* CENTER LINKS */
+/* NAV LINKS */
 .nav-links {
   display: flex;
-  gap: 25px;
+  gap: 20px;
 }
 
 .nav-links a {
+  color: white;
   text-decoration: none;
-  color: #cbd5f5;
   font-size: 15px;
+  position: relative;
   transition: 0.3s;
 }
 
-.nav-links a:hover {
-  color: #38bdf8;
+/* Hover underline animation */
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background: white;
+  transition: 0.3s;
 }
 
-/* RIGHT SECTION */
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* RIGHT SIDE */
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
-/* USER NAME BADGE */
-.user-pill {
-  background: #38bdf8;
-  color: #0f172a;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* LOGIN BUTTON */
-.login-btn {
-  text-decoration: none;
-  color: #38bdf8;
+/* USER NAME */
+.user-name {
+  font-size: 14px;
   font-weight: 500;
+  opacity: 0.9;
 }
 
-/* REGISTER BUTTON */
-.register-btn {
-  background: #38bdf8;
-  color: #0f172a;
-  padding: 6px 12px;
-  border-radius: 8px;
+/* LOGIN / REGISTER LINKS */
+.nav-right a {
+  color: white;
   text-decoration: none;
-  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.nav-right a:hover {
+  opacity: 0.8;
 }
 
 /* LOGOUT BUTTON */
 .logout-btn {
+  padding: 6px 14px;
   background: #ef4444;
   border: none;
+  border-radius: 6px;
   color: white;
-  padding: 6px 12px;
-  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
   transition: 0.3s;
 }
 
 .logout-btn:hover {
   background: #dc2626;
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-right {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

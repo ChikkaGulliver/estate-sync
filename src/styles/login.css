@@ -1,34 +1,43 @@
-.auth {
-  max-width: 350px;
-  margin: 80px auto;
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+}
+
+.login-card {
   background: white;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  padding: 35px;
+  width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   text-align: center;
 }
 
-.auth input {
+.login-card h2 {
+  margin-bottom: 20px;
+}
+
+.login-card input {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   margin-bottom: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-.auth input:focus {
-  outline: none;
-  border: 1px solid #3b82f6;
-}
-
-.auth button {
+.login-card button {
   width: 100%;
-  padding: 12px;
-  background: #3b82f6;
+  padding: 10px;
+  background: #0ea5e9;
+  border: none;
   color: white;
-  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.auth button:hover {
-  background: #2563eb;
+.login-card button:hover {
+  background: #0284c7;
 }

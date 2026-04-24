@@ -1,109 +1,105 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
-import { db, auth } from "../firebase"; // make sure paths are correct
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+  doc,
+  getDoc,
+  updateDoc
+} from "firebase/firestore";
+import { db, auth } from "../firebase";
 import "../styles/dashboard.css";
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("ALL");
+  const [role, setRole] = useState("user");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!auth.currentUser) {
+    const user = auth.currentUser;
+
+    if (!user) {
       navigate("/login");
       return;
     }
 
-    const q = query(
-      collection(db, "orders"),
-      where("userId", "==", auth.currentUser.uid),
-      orderBy("createdAt", "desc")
-    );
+    const loadData = async () => {
+      // 🔐 Get role safely from Firestore
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
 
-    const unsub = onSnapshot(q, (snap) => {
-      const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      setOrders(data);
-      setLoading(false);
-    });
+      const userRole = snap.exists() ? snap.data().role : "user";
+      setRole(userRole);
 
-    return () => unsub();
+      let q;
+
+      // 👤 USER → only their applications
+      if (userRole === "user") {
+        q = query(
+          collection(db, "orders"),
+          where("userId", "==", user.uid),
+          orderBy("createdAt", "desc")
+        );
+      }
+
+      // 🧑‍💼 AGENT → all tasks
+      else {
+        q = query(
+          collection(db, "orders"),
+          orderBy("createdAt", "desc")
+        );
+      }
+
+      onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setOrders(data);
+      });
+    };
+
+    loadData();
   }, [navigate]);
 
-  const filtered = orders.filter((o) =>
-    filter === "ALL" ? true : (o.status || "Pending").toUpperCase() === filter
-  );
-
-  const statusClass = (status) => {
-    const s = (status || "Pending").toLowerCase();
-    if (s === "approved") return "badge approved";
-    if (s === "rejected") return "badge rejected";
-    return "badge pending";
+  const updateStatus = async (id, status) => {
+    await updateDoc(doc(db, "orders", id), { status });
   };
 
   return (
     <div className="dashboard-page">
-      <div className="dashboard-header">
-        <h1>Your Applications</h1>
+      <h1>
+        {role === "agent" ? "Agent Tasks" : "My Applications"}
+      </h1>
 
-        <div className="filters">
-          {["ALL", "PENDING", "APPROVED", "REJECTED"].map((f) => (
-            <button
-              key={f}
-              className={filter === f ? "filter active" : "filter"}
-              onClick={() => setFilter(f)}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+      <div className="grid">
+        {orders.map((item) => (
+          <div className="card" key={item.id}>
+            <h3>{item.serviceName}</h3>
+            <p><b>Name:</b> {item.name}</p>
+            <p><b>Location:</b> {item.location}</p>
+
+            <p className={`status ${item.status?.toLowerCase()}`}>
+              {item.status || "Pending"}
+            </p>
+
+            {/* Agent controls */}
+            {role === "agent" && (
+              <div className="actions">
+                <button onClick={() => updateStatus(item.id, "Approved")}>
+                  Approve
+                </button>
+                <button onClick={() => updateStatus(item.id, "Rejected")}>
+                  Reject
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-
-      {loading ? (
-        <div className="state">Loading applications…</div>
-      ) : filtered.length === 0 ? (
-        <div className="state">
-          No applications yet. Go to <span onClick={() => navigate("/services")} className="link">Services</span> to apply.
-        </div>
-      ) : (
-        <div className="grid">
-          {filtered.map((item) => (
-            <div className="card" key={item.id}>
-              <div className="card-top">
-                <h3>{item.serviceName}</h3>
-                <span className={statusClass(item.status)}>
-                  {item.status || "Pending"}
-                </span>
-              </div>
-
-              <div className="meta">
-                <p><b>Name:</b> {item.name}</p>
-                <p><b>Phone:</b> {item.phone}</p>
-                <p><b>Location:</b> {item.location}</p>
-              </div>
-
-              <div className="card-actions">
-                {item.fileURL && (
-                  <a
-                    href={item.fileURL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="doc-link"
-                  >
-                    View Document
-                  </a>
-                )}
-                <span className="time">
-                  {item.createdAt?.toDate
-                    ? item.createdAt.toDate().toLocaleString()
-                    : ""}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

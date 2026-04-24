@@ -13,5 +13,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+// 🔐 Auth
 export const auth = getAuth(app);
+
+// 🗄️ Firestore
 export const db = getFirestore(app);

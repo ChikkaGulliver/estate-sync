@@ -17,32 +17,33 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await signOut(auth);
+
+    // 🔥 Clear everything
+    localStorage.clear();
+    sessionStorage.clear();
+
     navigate("/login");
   };
 
   return (
     <nav className="navbar">
-      {/* LOGO */}
       <h2 className="logo">EstateSync</h2>
 
-      {/* LINKS */}
       <div className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/services">Services</Link>
-
         {user && <Link to="/dashboard">Dashboard</Link>}
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="nav-right">
         {!user ? (
           <>
-            <Link to="/login" className="login-btn">Login</Link>
-            <Link to="/register" className="register-btn">Register</Link>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
           </>
         ) : (
           <>
-            <span className="user-pill">
+            <span className="user-name">
               {user.email.split("@")[0]}
             </span>
 

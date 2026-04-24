@@ -1,29 +1,52 @@
-.auth {
-  max-width: 350px;
-  margin: 80px auto;
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+}
+
+.register-card {
   background: white;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  padding: 35px;
+  width: 330px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   text-align: center;
 }
 
-.auth input {
+.register-card h2 {
+  margin-bottom: 20px;
+}
+
+.register-card input {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   margin-bottom: 12px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-.auth button {
-  width: 100%;
-  padding: 12px;
-  background: #10b981;
-  color: white;
-  font-size: 16px;
+/* ROLE SELECT */
+.role-box {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
-.auth button:hover {
-  background: #059669;
+/* BUTTON */
+.register-card button {
+  width: 100%;
+  padding: 10px;
+  background: #0ea5e9;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.register-card button:hover {
+  background: #0284c7;
 }
