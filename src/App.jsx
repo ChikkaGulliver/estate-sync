@@ -4,12 +4,13 @@ import Navbar from "./components/Navbar";
 
 import Home from "./pages/Home";
 import Services from "./pages/Services";
-import ServiceDetails from "./pages/ServiceDetails";
 import ServiceForm from "./pages/ServiceForm";
 
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -17,20 +18,17 @@ export default function App() {
       <Navbar />
 
       <Routes>
-        {/* HOME */}
         <Route path="/" element={<Home />} />
 
-        {/* SERVICES FLOW */}
         <Route path="/services" element={<Services />} />
-        <Route path="/services/:category" element={<ServiceDetails />} />
-        <Route path="/service-form" element={<ServiceForm />} />
+        <Route path="/service-form/:id" element={<ServiceForm />} />
 
-        {/* AUTH */}
+        <Route path="/dashboard" element={<Dashboard />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* DASHBOARD */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
