@@ -1,0 +1,149 @@
+/* PAGE */
+.dashboard-page {
+  min-height: 100vh;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HEADER */
+.dashboard-header {
+  max-width: 1100px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  color: #0f172a;
+}
+
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.filter.active {
+  background: #0ea5e9;
+  color: white;
+}
+
+/* STATES */
+.state {
+  max-width: 1100px;
+  margin: 40px auto;
+  text-align: center;
+  color: #64748b;
+}
+
+.link {
+  color: #0ea5e9;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* GRID */
+.grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: 0.25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.12);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card h3 {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+/* STATUS BADGES */
+.badge {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* META */
+.meta {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.meta p {
+  margin-bottom: 4px;
+}
+
+/* ACTIONS */
+.card-actions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.doc-link {
+  text-decoration: none;
+  color: #0ea5e9;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.doc-link:hover {
+  text-decoration: underline;
+}
+
+.time {
+  font-size: 11px;
+  color: #94a3b8;
+}

@@ -1,84 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
-import "./servicedetails.css";
-
-// All services grouped by category
-const servicesData = {
-  "property-registration": {
-    title: "Property Registration Services",
-    services: [
-      "Sale Deed Registration",
-      "Gift Deed Registration",
-      "Property Transfer"
-    ]
-  },
-  "khata-ownership": {
-    title: "Khata & Ownership Services",
-    services: [
-      "Khata Transfer",
-      "Khata Extraction",
-      "Ownership Change"
-    ]
-  },
-  "construction-approval": {
-    title: "Construction Approval Services",
-    services: [
-      "Building Plan Approval",
-      "Construction License"
-    ]
-  },
-  "land-layout": {
-    title: "Land & Layout Services",
-    services: [
-      "Land Conversion",
-      "Layout Approval"
-    ]
-  },
-  "legal-verification": {
-    title: "Legal & Verification Services",
-    services: [
-      "Title Verification",
-      "Legal Opinion",
-      "Encumbrance Certificate"
-    ]
-  },
-  "home-buyer": {
-    title: "Home Buyer Support Services",
-    services: [
-      "Home Loan Assistance",
-      "Property Valuation",
-      "Site Inspection"
-    ]
-  },
-  "farm-land": {
-    title: "Farm Land Services",
-    services: [
-      "Agricultural Land Registration",
-      "Conversion Guidance"
-    ]
-  },
-  "document-guidance": {
-    title: "Document Guidance Services",
-    services: [
-      "Document Checklist",
-      "Application Filing Help"
-    ]
-  }
-};
+import { servicesData } from "../utils/servicesData";
+import "../styles/serviceDetails.css";
 
 export default function ServiceDetails() {
-  const { category } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const selected = servicesData[category];
+  const service = servicesData.find(
+    (s) => s.id === parseInt(id)
+  );
 
-  // If wrong URL
-  if (!selected) {
-    return (
-      <div className="details-page">
-        <h2>Service Not Found</h2>
-      </div>
-    );
-  }
+  if (!service) return <h2>Service not found</h2>;
 
   return (
     <div className="details-page">
@@ -88,29 +20,36 @@ export default function ServiceDetails() {
         ← Back
       </button>
 
-      <h1>{selected.title}</h1>
+      {/* MAIN CARD */}
+      <div className="details-container">
 
-      {/* SERVICES LIST */}
-      <div className="services-grid">
-        {selected.services.map((service, index) => (
-          <div key={index} className="service-card">
+        <h1>{service.name}</h1>
+        <p className="desc">{service.description}</p>
 
-            <h3>{service}</h3>
+        <h3>Procedure</h3>
+        <ul>
+          {service.procedure.map((step, i) => (
+            <li key={i}>{step}</li>
+          ))}
+        </ul>
 
-            <button
-              onClick={() =>
-                navigate("/service-form", {
-                  state: { serviceName: service }
-                })
-              }
-            >
-              Apply
-            </button>
+        <h3>Documents Required</h3>
+        <ul>
+          {service.documents.map((doc, i) => (
+            <li key={i}>{doc}</li>
+          ))}
+        </ul>
 
-          </div>
-        ))}
+        <button
+          className="apply-btn"
+          onClick={() =>
+            navigate(`/service-form/${service.name}`)
+          }
+        >
+          Apply Now
+        </button>
+
       </div>
-
     </div>
   );
 }

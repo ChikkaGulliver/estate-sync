@@ -1,69 +1,66 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { db, auth } from "../firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import "./serviceform.css";
+import "../styles/serviceform.css";
 
 export default function ServiceForm() {
-  const { id } = useParams();
+  const { serviceName } = useParams();
   const navigate = useNavigate();
-
-  const serviceName = decodeURIComponent(id || "Service");
 
   const [form, setForm] = useState({
     name: "",
     phone: "",
-    location: ""
+    location: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    try {
-      await addDoc(collection(db, "services"), {
-        ...form,
-        serviceName,
-        userId: auth.currentUser?.uid || "",
-        status: "Pending",
-        createdAt: serverTimestamp()
-      });
-
-      alert("Application submitted successfully!");
-      navigate("/dashboard");
-
-    } catch (error) {
-      console.error(error);
-      alert("Error submitting form");
-    }
+    alert("Application Submitted!");
+    navigate("/dashboard");
   };
 
   return (
     <div className="form-container">
+
+      {/* BACK BUTTON */}
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        ← Back
+      </button>
+
       <div className="form-card">
         <h2>{serviceName}</h2>
 
-        <form onSubmit={handleSubmit} className="form">
+        <form onSubmit={handleSubmit}>
           <input
-            placeholder="Full Name"
+            type="text"
+            placeholder="Name"
             required
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
           />
 
           <input
-            placeholder="Phone Number"
+            type="text"
+            placeholder="Phone"
             required
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, phone: e.target.value })
+            }
           />
 
           <input
+            type="text"
             placeholder="Location"
             required
-            onChange={(e) => setForm({ ...form, location: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, location: e.target.value })
+            }
           />
 
-          <button type="submit">Submit Application</button>
+          <button type="submit">Submit</button>
         </form>
       </div>
+
     </div>
   );
 }

@@ -1,0 +1,81 @@
+/* PAGE WRAPPER */
+.details-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* CARD */
+.details-container {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* TITLE */
+.details-container h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #1e293b;
+}
+
+/* DESCRIPTION */
+.desc {
+  font-size: 15px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+/* HEADINGS */
+.details-container h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #0ea5e9;
+}
+
+/* LIST */
+.details-container ul {
+  padding-left: 18px;
+}
+
+.details-container li {
+  margin-bottom: 6px;
+  color: #334155;
+}
+
+/* APPLY BUTTON */
+.apply-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.apply-btn:hover {
+  background-color: #0284c7;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  padding: 6px 12px;
+  background: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #cbd5f5;
+}

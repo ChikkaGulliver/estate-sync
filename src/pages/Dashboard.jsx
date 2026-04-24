@@ -1,174 +1,109 @@
 import { useEffect, useState } from "react";
-import { auth, db } from "../firebase";
-import {
-  onAuthStateChanged,
-  signOut
-} from "firebase/auth";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy
-} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
+import { db, auth } from "../firebase"; // make sure paths are correct
+import "../styles/dashboard.css";
 
 export default function Dashboard() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("ALL");
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
-  const [services, setServices] = useState([]);
-
-  // 🔐 Check login
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        navigate("/login");
-      } else {
-        setUser(currentUser);
-      }
+    if (!auth.currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    const q = query(
+      collection(db, "orders"),
+      where("userId", "==", auth.currentUser.uid),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsub = onSnapshot(q, (snap) => {
+      const data = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setOrders(data);
+      setLoading(false);
     });
 
     return () => unsub();
-  }, []);
+  }, [navigate]);
 
-  // 📦 Fetch services in real-time
-  useEffect(() => {
-    const q = query(collection(db, "services"), orderBy("createdAt", "desc"));
+  const filtered = orders.filter((o) =>
+    filter === "ALL" ? true : (o.status || "Pending").toUpperCase() === filter
+  );
 
-    const unsub = onSnapshot(q, (snapshot) => {
-      const list = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setServices(list);
-    });
-
-    return () => unsub();
-  }, []);
-
-  // 🚪 Logout
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/login");
+  const statusClass = (status) => {
+    const s = (status || "Pending").toLowerCase();
+    if (s === "approved") return "badge approved";
+    if (s === "rejected") return "badge rejected";
+    return "badge pending";
   };
 
   return (
-    <div style={styles.container}>
-      
-      {/* HEADER */}
-      <div style={styles.header}>
-        <h2>Dashboard</h2>
-        <div>
-          <span style={{ marginRight: "15px" }}>
-            {user?.email}
-          </span>
-          <button onClick={handleLogout} style={styles.logoutBtn}>
-            Logout
-          </button>
+    <div className="dashboard-page">
+      <div className="dashboard-header">
+        <h1>Your Applications</h1>
+
+        <div className="filters">
+          {["ALL", "PENDING", "APPROVED", "REJECTED"].map((f) => (
+            <button
+              key={f}
+              className={filter === f ? "filter active" : "filter"}
+              onClick={() => setFilter(f)}
+            >
+              {f}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* CONTENT */}
-      <h3 style={{ marginTop: "20px" }}>Your Applications</h3>
-
-      {services.length === 0 ? (
-        <p>No applications found</p>
+      {loading ? (
+        <div className="state">Loading applications…</div>
+      ) : filtered.length === 0 ? (
+        <div className="state">
+          No applications yet. Go to <span onClick={() => navigate("/services")} className="link">Services</span> to apply.
+        </div>
       ) : (
-        <div style={styles.grid}>
-          {services.map((service) => (
-            <div key={service.id} style={styles.card}>
-              
-              <h4>{service.serviceName}</h4>
-
-              <p>
-                <b>Status:</b>{" "}
-                <span style={getStatusStyle(service.status)}>
-                  {service.status || "Pending"}
+        <div className="grid">
+          {filtered.map((item) => (
+            <div className="card" key={item.id}>
+              <div className="card-top">
+                <h3>{item.serviceName}</h3>
+                <span className={statusClass(item.status)}>
+                  {item.status || "Pending"}
                 </span>
-              </p>
+              </div>
 
-              <p>
-                <b>Location:</b> {service.location || "N/A"}
-              </p>
+              <div className="meta">
+                <p><b>Name:</b> {item.name}</p>
+                <p><b>Phone:</b> {item.phone}</p>
+                <p><b>Location:</b> {item.location}</p>
+              </div>
 
-              {/* DOCUMENT */}
-              {service.fileURL && (
-                <a
-                  href={service.fileURL}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={styles.link}
-                >
-                  View Document
-                </a>
-              )}
-
-              <p style={styles.date}>
-                {service.createdAt?.toDate
-                  ? service.createdAt.toDate().toLocaleString()
-                  : ""}
-              </p>
-
+              <div className="card-actions">
+                {item.fileURL && (
+                  <a
+                    href={item.fileURL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="doc-link"
+                  >
+                    View Document
+                  </a>
+                )}
+                <span className="time">
+                  {item.createdAt?.toDate
+                    ? item.createdAt.toDate().toLocaleString()
+                    : ""}
+                </span>
+              </div>
             </div>
           ))}
         </div>
       )}
     </div>
   );
-}
-
-/* 🎨 STYLES */
-
-const styles = {
-  container: {
-    padding: "30px",
-    fontFamily: "Arial"
-  },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  logoutBtn: {
-    padding: "8px 12px",
-    backgroundColor: "#ef4444",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "20px",
-    marginTop: "20px"
-  },
-  card: {
-    padding: "15px",
-    borderRadius: "10px",
-    backgroundColor: "#f1f5f9",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-  },
-  link: {
-    display: "inline-block",
-    marginTop: "10px",
-    color: "#0ea5e9"
-  },
-  date: {
-    marginTop: "10px",
-    fontSize: "12px",
-    color: "gray"
-  }
-};
-
-// 🔥 STATUS COLORS
-function getStatusStyle(status) {
-  switch (status) {
-    case "Approved":
-      return { color: "green", fontWeight: "bold" };
-    case "Rejected":
-      return { color: "red", fontWeight: "bold" };
-    default:
-      return { color: "orange", fontWeight: "bold" };
-  }
 }

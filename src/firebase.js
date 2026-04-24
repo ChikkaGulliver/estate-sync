@@ -1,9 +1,7 @@
-// 🔥 Firebase imports
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// 🔐 Your Firebase config (paste from Firebase console)
 const firebaseConfig = {
   apiKey: "AIzaSyAqsobU8EIplnsdotzAvrCwDtC1KPe6W20",
   authDomain: "estatesync-67dff.firebaseapp.com",
@@ -13,14 +11,7 @@ const firebaseConfig = {
   appId: "1:244526681807:web:93d871ebffbf14c530f1ba"
 };
 
-// 🚀 Initialize app
 const app = initializeApp(firebaseConfig);
 
-// 📦 Firestore (database)
-export const db = getFirestore(app);
-
-// 🔐 Authentication
 export const auth = getAuth(app);
-
-// 👑 Admin email (IMPORTANT)
-export const ADMIN_EMAIL = "nrchikka176@email.com";
+export const db = getFirestore(app);

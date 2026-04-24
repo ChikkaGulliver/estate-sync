@@ -1,76 +1,52 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../firebase";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth, ADMIN_EMAIL } from "../firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import "../styles/navbar.css";
 
 export default function Navbar() {
-  const location = useLocation();
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
-
-  // 🔐 Track login state
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
     });
-
     return () => unsub();
   }, []);
 
-  // 🚪 Logout
   const handleLogout = async () => {
     await signOut(auth);
     navigate("/login");
   };
 
   return (
-    <nav style={styles.nav}>
+    <nav className="navbar">
       {/* LOGO */}
-      <h2 style={styles.logo}>EstateSync</h2>
+      <h2 className="logo">EstateSync</h2>
 
       {/* LINKS */}
-      <div style={styles.links}>
-        <Link style={getLinkStyle(location, "/")} to="/">
-          Home
-        </Link>
+      <div className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/services">Services</Link>
 
-        <Link style={getLinkStyle(location, "/services")} to="/services">
-          Services
-        </Link>
-
-        {user && (
-          <Link style={getLinkStyle(location, "/dashboard")} to="/dashboard">
-            Dashboard
-          </Link>
-        )}
-
-        {/* 👑 Admin only */}
-        {user?.email === ADMIN_EMAIL && (
-          <Link style={getLinkStyle(location, "/admin")} to="/admin">
-            Admin
-          </Link>
-        )}
+        {user && <Link to="/dashboard">Dashboard</Link>}
       </div>
 
-      {/* AUTH BUTTONS */}
-      <div style={styles.auth}>
+      {/* RIGHT SIDE */}
+      <div className="nav-right">
         {!user ? (
           <>
-            <Link to="/login" style={styles.button}>
-              Login
-            </Link>
-            <Link to="/register" style={styles.buttonOutline}>
-              Register
-            </Link>
+            <Link to="/login" className="login-btn">Login</Link>
+            <Link to="/register" className="register-btn">Register</Link>
           </>
         ) : (
           <>
-            <span style={{ marginRight: "10px" }}>
-              {user.email}
+            <span className="user-pill">
+              {user.email.split("@")[0]}
             </span>
 
-            <button onClick={handleLogout} style={styles.button}>
+            <button className="logout-btn" onClick={handleLogout}>
               Logout
             </button>
           </>
@@ -79,52 +55,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-// 🎨 ACTIVE LINK STYLE
-function getLinkStyle(location, path) {
-  return {
-    textDecoration: "none",
-    color: location.pathname === path ? "#00bcd4" : "white",
-    fontSize: "16px"
-  };
-}
-
-// 🎨 STYLES
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "10px 20px",
-    backgroundColor: "#1a1a1a",
-    color: "white"
-  },
-  logo: {
-    fontSize: "22px",
-    fontWeight: "bold"
-  },
-  links: {
-    display: "flex",
-    gap: "20px"
-  },
-  auth: {
-    display: "flex",
-    gap: "10px",
-    alignItems: "center"
-  },
-  button: {
-    padding: "6px 12px",
-    backgroundColor: "#00bcd4",
-    color: "black",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer"
-  },
-  buttonOutline: {
-    padding: "6px 12px",
-    border: "1px solid #00bcd4",
-    color: "#00bcd4",
-    borderRadius: "5px",
-    textDecoration: "none"
-  }
-};
