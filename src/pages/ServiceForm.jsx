@@ -33,15 +33,18 @@ export default function ServiceForm() {
 
       // 🔥 Save to Firestore (no file upload)
       await addDoc(collection(db, "orders"), {
-        userId: auth.currentUser.uid,
-        serviceName,
-        name: form.name,
-        location: form.location,
-        phone: form.phone,
-        fileName, // only name saved
-        status: "Pending",
-        createdAt: serverTimestamp(),
-      });
+  userId: auth.currentUser.uid,
+  serviceName,
+  name: form.name,
+  location: form.location,
+  phone: form.phone,
+
+  status: "Pending",
+  assignedAgentId: null,   // 🔥 NEW
+  progress: "Not Started", // 🔥 NEW
+
+  createdAt: serverTimestamp(),
+});
 
       alert("Application submitted successfully!");
       navigate("/dashboard");

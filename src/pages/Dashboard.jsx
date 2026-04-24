@@ -27,16 +27,14 @@ export default function Dashboard() {
     }
 
     const loadData = async () => {
-      // 🔐 Get role safely from Firestore
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      const userSnap = await getDoc(doc(db, "users", user.uid));
+      const userRole = userSnap.exists() ? userSnap.data().role : "user";
 
-      const userRole = snap.exists() ? snap.data().role : "user";
       setRole(userRole);
 
       let q;
 
-      // 👤 USER → only their applications
+      // 👤 USER → only their requests
       if (userRole === "user") {
         q = query(
           collection(db, "orders"),
@@ -45,12 +43,11 @@ export default function Dashboard() {
         );
       }
 
-      // 🧑‍💼 AGENT → all tasks
+      // 👨‍💼 AGENT → show:
+      // 1. Unassigned requests
+      // 2. Their own assigned requests
       else {
-        q = query(
-          collection(db, "orders"),
-          orderBy("createdAt", "desc")
-        );
+        q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
       }
 
       onSnapshot(q, (snapshot) => {
@@ -58,44 +55,102 @@ export default function Dashboard() {
           id: doc.id,
           ...doc.data()
         }));
-        setOrders(data);
+
+        // 🔥 AGENT FILTER
+        if (userRole === "agent") {
+          setOrders(
+            data.filter(
+              (item) =>
+                item.assignedAgentId === null ||
+                item.assignedAgentId === user.uid
+            )
+          );
+        } else {
+          setOrders(data);
+        }
       });
     };
 
     loadData();
   }, [navigate]);
 
-  const updateStatus = async (id, status) => {
-    await updateDoc(doc(db, "orders", id), { status });
+  // ✅ APPROVE → assign agent
+  const approveService = async (id) => {
+    await updateDoc(doc(db, "orders", id), {
+      status: "Approved",
+      assignedAgentId: auth.currentUser.uid
+    });
+  };
+
+  // ❌ Reject
+  const rejectService = async (id) => {
+    await updateDoc(doc(db, "orders", id), {
+      status: "Rejected"
+    });
+  };
+
+  // 🔄 Progress update
+  const updateProgress = async (id, progress) => {
+    await updateDoc(doc(db, "orders", id), {
+      progress
+    });
   };
 
   return (
     <div className="dashboard-page">
       <h1>
-        {role === "agent" ? "Agent Tasks" : "My Applications"}
+        {role === "agent" ? "Agent Panel" : "My Applications"}
       </h1>
 
       <div className="grid">
         {orders.map((item) => (
           <div className="card" key={item.id}>
             <h3>{item.serviceName}</h3>
+
             <p><b>Name:</b> {item.name}</p>
             <p><b>Location:</b> {item.location}</p>
 
             <p className={`status ${item.status?.toLowerCase()}`}>
-              {item.status || "Pending"}
+              {item.status}
             </p>
 
-            {/* Agent controls */}
+            {/* USER VIEW */}
+            {role === "user" && (
+              <p><b>Progress:</b> {item.progress}</p>
+            )}
+
+            {/* AGENT VIEW */}
             {role === "agent" && (
-              <div className="actions">
-                <button onClick={() => updateStatus(item.id, "Approved")}>
-                  Approve
-                </button>
-                <button onClick={() => updateStatus(item.id, "Rejected")}>
-                  Reject
-                </button>
-              </div>
+              <>
+                {/* Show approve only if not assigned */}
+                {item.assignedAgentId === null && (
+                  <div className="actions">
+                    <button onClick={() => approveService(item.id)}>
+                      Accept
+                    </button>
+                    <button onClick={() => rejectService(item.id)}>
+                      Reject
+                    </button>
+                  </div>
+                )}
+
+                {/* Show tracking only if agent owns it */}
+                {item.assignedAgentId === auth.currentUser.uid && (
+                  <div className="progress-box">
+                    <select
+                      value={item.progress}
+                      onChange={(e) =>
+                        updateProgress(item.id, e.target.value)
+                      }
+                    >
+                      <option>Not Started</option>
+                      <option>Documents Verified</option>
+                      <option>In Progress</option>
+                      <option>Completed</option>
+                    </select>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ))}

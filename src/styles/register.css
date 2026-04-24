@@ -1,52 +1,91 @@
 .register-page {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+
+  background: linear-gradient(
+    135deg,
+    #e3f2fd,
+    #ffffff
+  );
 }
 
 .register-card {
-  background: white;
+  width: 380px;
   padding: 35px;
-  width: 330px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+
+  background: white;
+  border-radius: 16px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .register-card h2 {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
+  font-size: 26px;
+  color: #333;
 }
 
-.register-card input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-/* ROLE SELECT */
-.role-box {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 15px;
+.subtitle {
   font-size: 14px;
+  color: #777;
+  margin-bottom: 25px;
 }
 
-/* BUTTON */
+.register-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-card input,
+.register-card select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.register-card input:focus,
+.register-card select:focus {
+  border-color: #2196f3;
+  outline: none;
+}
+
 .register-card button {
-  width: 100%;
-  padding: 10px;
-  background: #0ea5e9;
+  padding: 12px;
   border: none;
+  border-radius: 8px;
+
+  background: linear-gradient(
+    90deg,
+    #2196f3,
+    #21cbf3
+  );
+
   color: white;
-  border-radius: 6px;
+  font-weight: bold;
   cursor: pointer;
+
   transition: 0.3s;
 }
 
 .register-card button:hover {
-  background: #0284c7;
+  opacity: 0.9;
+}
+
+.login-link {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-link span {
+  color: #2196f3;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 5px;
 }

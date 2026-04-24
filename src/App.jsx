@@ -9,6 +9,10 @@ import ServiceDetails from "./pages/ServiceDetails";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PhoneVerification from "./pages/PhoneVerification";
+import AgentOnboarding from "./pages/AgentOnboarding";
+import AdminDashboard from "./pages/AdminDashboard";
+
 
 export default function App() {
   return (
@@ -23,6 +27,9 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-phone" element={<PhoneVerification />} />
+<Route path="/agent-onboarding" element={<AgentOnboarding />} />
+<Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

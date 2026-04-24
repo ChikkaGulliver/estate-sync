@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
 import { auth, db } from "../firebase";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import "../styles/register.css";
 
 export default function Register() {
@@ -15,49 +15,39 @@ export default function Register() {
     role: "user",
   });
 
-  // 🔥 Clear inputs when page loads
-  useEffect(() => {
-    setForm({
-      name: "",
-      email: "",
-      password: "",
-      role: "user",
-    });
-  }, []);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const userCred = await createUserWithEmailAndPassword(
+      const res = await createUserWithEmailAndPassword(
         auth,
         form.email,
         form.password
       );
 
-      const user = userCred.user;
+      const user = res.user;
 
-      // Save role + details
-      await setDoc(doc(db, "users", user.uid), {
-        name: form.name,
-        email: form.email,
-        role: form.role,
-        createdAt: serverTimestamp(),
-      });
+      // USER FLOW
+      if (form.role === "user") {
+        await setDoc(doc(db, "users", user.uid), {
+          name: form.name,
+          email: form.email,
+          role: "user",
+        });
 
-      // 🔥 clear fields
-      setForm({
-        name: "",
-        email: "",
-        password: "",
-        role: "user",
-      });
+        navigate("/dashboard");
+      }
 
-      navigate("/dashboard");
+      // AGENT FLOW → go to phone verification
+      if (form.role === "agent") {
+        navigate("/verify-phone", {
+          state: {
+            uid: user.uid,
+            name: form.name,
+            email: form.email,
+          },
+        });
+      }
 
     } catch (err) {
       alert(err.message);
@@ -66,66 +56,59 @@ export default function Register() {
 
   return (
     <div className="register-page">
-      <form
-        className="register-card"
-        onSubmit={handleRegister}
-        autoComplete="off"
-      >
+      <div className="register-card">
+
         <h2>Create Account</h2>
+        <p className="subtitle">Join EstateSync</p>
 
-        <input
-          name="name"
-          placeholder="Full Name"
-          value={form.name}
-          autoComplete="off"
-          onChange={handleChange}
-        />
+        <form onSubmit={handleRegister}>
 
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          autoComplete="off"
-          onChange={handleChange}
-        />
+          <input
+            type="text"
+            placeholder="Full Name"
+            required
+            onChange={(e) =>
+              setForm({ ...form, name: e.target.value })
+            }
+          />
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          autoComplete="new-password"
-          onChange={handleChange}
-        />
+          <input
+            type="email"
+            placeholder="Email Address"
+            required
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+          />
 
-        {/* ROLE SELECT */}
-        <div className="role-box">
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="user"
-              checked={form.role === "user"}
-              onChange={handleChange}
-            />
-            User
-          </label>
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            onChange={(e) =>
+              setForm({ ...form, password: e.target.value })
+            }
+          />
 
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="agent"
-              checked={form.role === "agent"}
-              onChange={handleChange}
-            />
-            Agent
-          </label>
-        </div>
+          <select
+            onChange={(e) =>
+              setForm({ ...form, role: e.target.value })
+            }
+          >
+            <option value="user">User</option>
+            <option value="agent">Agent</option>
+          </select>
 
-        <button type="submit">Register</button>
-      </form>
+          <button type="submit">Register</button>
+
+        </form>
+
+        <p className="login-link">
+          Already have an account?
+          <span onClick={() => navigate("/login")}> Login</span>
+        </p>
+
+      </div>
     </div>
   );
 }
