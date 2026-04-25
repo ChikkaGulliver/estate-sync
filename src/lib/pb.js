@@ -1,4 +1,6 @@
 import PocketBase from 'pocketbase';
 
-export const pb = new PocketBase('http://10.60.218.189');
-pb.autoCancellation(false);
+// Pointing back to your local computer
+const pb = new PocketBase('http://127.0.0.1:8090'); 
+
+export { pb };
