@@ -6,6 +6,8 @@ export const servicesData = [
     description: "Register property ownership legally.",
     procedure: ["Prepare deed", "Verify documents", "Pay stamp duty", "Register"],
     documents: ["Aadhar", "PAN", "Sale Agreement"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 2,
@@ -14,6 +16,8 @@ export const servicesData = [
     description: "Transfer property as gift.",
     procedure: ["Draft deed", "Verify", "Register"],
     documents: ["Aadhar", "Gift Deed"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 3,
@@ -22,6 +26,8 @@ export const servicesData = [
     description: "Transfer ownership officially.",
     procedure: ["Apply", "Verify", "Transfer"],
     documents: ["Sale Deed", "ID Proof"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 4,
@@ -30,6 +36,8 @@ export const servicesData = [
     description: "Transfer municipal records.",
     procedure: ["Apply", "Verify", "Update"],
     documents: ["Tax Receipt", "Sale Deed"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 5,
@@ -38,6 +46,8 @@ export const servicesData = [
     description: "Get Khata certificate.",
     procedure: ["Apply", "Verification", "Issue"],
     documents: ["Property Details"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 6,
@@ -46,6 +56,8 @@ export const servicesData = [
     description: "Update ownership records.",
     procedure: ["Submit request", "Verify", "Update"],
     documents: ["Sale Deed"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 7,
@@ -54,6 +66,8 @@ export const servicesData = [
     description: "Approval before construction.",
     procedure: ["Submit plan", "Inspection", "Approval"],
     documents: ["Plan", "Ownership Proof"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 8,
@@ -62,6 +76,8 @@ export const servicesData = [
     description: "License for construction.",
     procedure: ["Apply", "Verify", "Approve"],
     documents: ["Plan", "ID"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 9,
@@ -70,6 +86,8 @@ export const servicesData = [
     description: "Convert land usage.",
     procedure: ["Apply", "Verify", "Approve"],
     documents: ["Land Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 10,
@@ -78,6 +96,8 @@ export const servicesData = [
     description: "Approval for layout.",
     procedure: ["Submit plan", "Verify", "Approve"],
     documents: ["Layout Plan"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 11,
@@ -86,6 +106,8 @@ export const servicesData = [
     description: "Verify ownership legally.",
     procedure: ["Apply", "Verify records"],
     documents: ["Property Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 12,
@@ -94,6 +116,8 @@ export const servicesData = [
     description: "Legal advice for property.",
     procedure: ["Submit details", "Get report"],
     documents: ["Property Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 13,
@@ -102,6 +126,8 @@ export const servicesData = [
     description: "Check legal dues.",
     procedure: ["Apply", "Search", "Issue"],
     documents: ["Property Details"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 14,
@@ -110,6 +136,8 @@ export const servicesData = [
     description: "Help for loan processing.",
     procedure: ["Apply", "Verify", "Assist"],
     documents: ["Income Proof"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 15,
@@ -118,6 +146,8 @@ export const servicesData = [
     description: "Know property value.",
     procedure: ["Request", "Inspect", "Report"],
     documents: ["Property Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 16,
@@ -126,6 +156,8 @@ export const servicesData = [
     description: "Inspection before buying.",
     procedure: ["Request", "Visit", "Report"],
     documents: ["Property Details"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 17,
@@ -134,6 +166,8 @@ export const servicesData = [
     description: "Register farm land.",
     procedure: ["Apply", "Verify", "Register"],
     documents: ["Land Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 18,
@@ -142,6 +176,8 @@ export const servicesData = [
     description: "Guide for land conversion.",
     procedure: ["Consult", "Apply"],
     documents: ["Land Docs"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 19,
@@ -150,6 +186,8 @@ export const servicesData = [
     description: "Know required documents.",
     procedure: ["Select service", "Get list"],
     documents: ["None"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
   {
     id: 20,
@@ -158,5 +196,7 @@ export const servicesData = [
     description: "Help filling applications.",
     procedure: ["Submit info", "Get help"],
     documents: ["Form Details"],
+    agentCommission: "3%",
+    platformFee: "1.5%",
   },
 ];
